@@ -16,7 +16,7 @@
     "outDir": "./dist",
 
     "strict": true,
-    "noImplicitAny": false,
+//    "noImplicitAny": false,
 
     "checkJs": true,
   },

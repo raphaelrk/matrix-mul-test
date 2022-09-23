@@ -20,6 +20,7 @@
     "zeros": "^1.0.0"
   },
   "devDependencies": {
+    "@types/cwise": "^1.0.4",
     "@types/ndarray": "^1.0.11",
     "@types/ndarray-ops": "^1.2.4",
     "@types/node": "^18.7.18",

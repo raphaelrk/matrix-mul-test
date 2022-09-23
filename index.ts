@@ -1,15 +1,38 @@
 // js-matrix-mul-test/index.js
 // compare performance of matrix multiplication of various libraries
 
-// const SZ = 512;
+const sz = 512;
+const A = new Array(sz).fill(0).map(() => new Array(sz).fill(0).map(() => 100 * Math.random()));
+const B = new Array(sz).fill(0).map(() => new Array(sz).fill(0).map(() => 100 * Math.random()));
+const A_flat = new Array(sz * sz).map((_, i) => A[Math.floor(i / sz)][i % sz]);
+const B_flat = new Array(sz * sz).map((_, i) => B[Math.floor(i / sz)][i % sz]);
+const A_typed = new Array(sz).fill(0).map((_, i) => new Float32Array(sz).fill(0).map((_, j) => A[i][j]));
+const B_typed = new Array(sz).fill(0).map((_, i) => new Float32Array(sz).fill(0).map((_, j) => B[i][j]));
+const A_flat_typed = new Float32Array(sz * sz).map((_, i) => A_flat[i]);
+const B_flat_typed = new Float32Array(sz * sz).map((_, i) => B_flat[i]);
 
-function timeIt(name, f, N_iters=10) {
+const AB = timeIt('default', () => {
+  const out = new Array(sz).fill(0).map(() => new Array(sz).fill(0));
+  for (let i = 0; i < sz; i++) {
+    for (let j = 0; j < sz; j++) {
+      // row i, col j of AB = (row i of A).dot(col j of B)
+      for (let k = 0; k < sz; k++) {
+        out[i][j] += A[i][k] * B[k][j];
+      }
+    }
+  }
+  return out;
+});
+process.stdout.write('\n');
+
+function timeIt<T>(name: string, f: () => T, N_iters=50): T {
   let start = Date.now();
   let min = Infinity;
   let max = 0;
+  let res = null;
   for (let i = 0; i < N_iters; i++) {
     let time = Date.now();
-    f();
+    res = f();
     time = Date.now() - time;
     if (time < min) min = time;
     if (time > max) max = time;
@@ -18,86 +41,131 @@ function timeIt(name, f, N_iters=10) {
   const label = `${name}:`.padEnd(25);
   const minStr = `${min}ms`.padEnd(10);
   const maxStr = `${max}ms`.padEnd(10);
-  const avgStr = `${avg}ms`;
-  console.log(`${label} min: ${minStr} max: ${maxStr} avg: ${avgStr}`);
+  const avgStr = `${avg}ms`.padEnd(10);
+  // console.log(`${label} min: ${minStr} max: ${maxStr} avg: ${avgStr}`);
+  process.stdout.write(`${label} min: ${minStr} max: ${maxStr} avg: ${avgStr}`);
+  return res!;
+}
+
+function check(getElem: (i: number, j: number) => number) : boolean {
+  let greatestDiff = 0;
+  for (let i = 0; i < sz; i++) {
+    for (let j = 0; j < sz; j++) {
+      let diff = Math.abs(AB[i][j] - getElem(i, j));
+      if (diff > greatestDiff) greatestDiff = diff;
+    }
+  }
+  if (greatestDiff > 1e-3) {
+    process.stdout.write(`  FAIL: greatest diff is ${greatestDiff.toExponential(2)}`);
+  }
+  else if (greatestDiff > 1e-6) {
+    process.stdout.write(`  WARN: greatest diff is ${greatestDiff.toExponential(2)}`);
+  }
+  process.stdout.write('\n');
+  return true;
 }
 
 // GPU.js
 import { GPU } from 'gpu.js';
 (function GPUJSTest() {
   // setup
-  const generateMatrices = () => {
-    const matrices : any[] = [[], []];
-    for (let y = 0; y < 512; y++){
-      matrices[0].push([]);
-      matrices[1].push([]);
-      for (let x = 0; x < 512; x++) {
-        matrices[0][y].push(Math.random());
-        matrices[1][y].push(Math.random());
-      }
-    }
-    return matrices;
-  };
-  // more terse?
-  // const generateMatrices = () => [
-  //   Array(512).fill(0).map(() => Array(512).fill(0).map(() => Math.random())),
-  //   Array(512).fill(0).map(() => Array(512).fill(0).map(() => Math.random())),
-  // ];
-  const matrices = generateMatrices();
+  const matrices = [A, B];
   const gpu = new GPU();
-  const gpuMatrixMultiply = gpu.createKernel(function (a, b) {
+  const gpuMatrixMultiplySinglePrecision = gpu.createKernel(function (a: number[][], b: number[][]) {
     let sum = 0;
     for (let i = 0; i < 512; i++) {
       sum += a[this.thread.y][i] * b[i][this.thread.x];
     }
     return sum;
+  }, {
+    precision: 'single',
+  }).setOutput([512, 512]);
+  const gpuMatrixMultiplyUnsignedPrecision = gpu.createKernel(function (a: number[][], b: number[][]) {
+    let sum = 0;
+    for (let i = 0; i < 512; i++) {
+      sum += a[this.thread.y][i] * b[i][this.thread.x];
+    }
+    return sum;
+  }, {
+    precision: 'unsigned',
   }).setOutput([512, 512]);
 
   // loop
-  timeIt('GPU.js', () => gpuMatrixMultiply(matrices[0], matrices[1]));
+  const res1 = timeIt('GPU.js single', () => gpuMatrixMultiplySinglePrecision(matrices[0], matrices[1])) as number[][];
+
+  // check
+  check((i, j) => res1[i][j]);
+
+  // loop
+  const res2 = timeIt('GPU.js unsigned', () => gpuMatrixMultiplyUnsignedPrecision(matrices[0], matrices[1])) as number[][];
+
+  // check
+  check((i, j) => res2[i][j]);
+
+
+  // loop
+  const res3 = timeIt('GPU.js single', () => gpuMatrixMultiplySinglePrecision(matrices[0], matrices[1])) as number[][];
+
+  // check
+  check((i, j) => res3[i][j]);
 })();
 
 // ml-matrix
 import { Matrix } from 'ml-matrix';
 (function mlMatrixTest() {
   // setup
-  const matrices = [Matrix.rand(512, 512), Matrix.rand(512, 512)];
+  // const matrices = [Matrix.rand(512, 512), Matrix.rand(512, 512)];
+  const matrices = [new Matrix(A), new Matrix(B)];
 
   // loop
-  timeIt('ml-matrix', () => matrices[0].mmul(matrices[1]));
+  const res = timeIt('ml-matrix', () => matrices[0].mmul(matrices[1]));
+
+  // check
+  check((i, j) => res.get(i, j));
 }());
 
 // tfjs-node
 import * as tf from '@tensorflow/tfjs-node';
 (function tfjsNodeTest() {
   // setup
-  const tensors = [tf.randomUniform([512, 512]), tf.randomUniform([512, 512])];
+  // const tensors = [tf.randomUniform([512, 512]), tf.randomUniform([512, 512])];
+  const tensors = [tf.tensor2d(A), tf.tensor2d(B)];
 
   // loop
-  timeIt('tfjs-node', () => tensors[0].matMul(tensors[1]));
+  const res : tf.Tensor = timeIt('tfjs-node', () => tensors[0].matMul(tensors[1]));
+
+  // check
+  let data = res.dataSync();
+  check((i, j) => data[i * sz + j]);
 })();
 
 // mathjs
 import * as math from 'mathjs';
 (function mathjsTest() {
   // setup
-  const matrices = [math.random([512, 512]), math.random([512, 512])];
+  // const matrices = [math.random([512, 512]), math.random([512, 512])];
+  const matrices = [math.matrix(A), math.matrix(B)];
 
   // loop
   // only do 2 iterations because it's so slow
-  timeIt('mathjs', () => math.multiply(matrices[0], matrices[1]), 2);
+  const res = timeIt('mathjs', () => math.multiply(matrices[0], matrices[1]), 2);
+
+  // check
+  check((i, j) => res.get([i, j]));
 })();
 
 // ndarray
+// @ts-ignore
+import zeros from 'zeros';
 import ndarray from 'ndarray';
 import cwise from 'cwise';
 import ops from 'ndarray-ops';
-import zeros from 'zeros';
 (function ndarrayTest() {
   // setup
-  const matrices = [zeros([512, 512]), zeros([512, 512])];
-  ops.random(matrices[0]);
-  ops.random(matrices[1]);
+  // const matrices = [zeros([512, 512]), zeros([512, 512])];
+  // ops.random(matrices[0]);
+  // ops.random(matrices[1]);
+  const matrices = [ndarray(A_flat, [sz, sz]), ndarray(B_flat, [sz, sz])];
   const multiply = cwise({
     args: ['array', 'array', 'array'],
     body: function (a, b, c) {
@@ -109,144 +177,159 @@ import zeros from 'zeros';
   });
 
   // loop
-  timeIt('ndarray', () => multiply(matrices[0], matrices[1], zeros([512, 512])));
+  const out = zeros([512, 512]);
+  timeIt('ndarray-same-out', () => multiply(matrices[0], matrices[1], out));
+  process.stdout.write('\n');
+  timeIt('ndarray-diff-out', () => multiply(matrices[0], matrices[1], zeros([512, 512])));
+
+  // check
+  check((i, j) => out.get(i, j));
 })();
 
 // matrix-js
+// @ts-ignore
 import matrix from 'matrix-js';
 (function matrixJsTest() {
   // setup
-  const matrices = [
-    matrix(new Array(512).fill(0).map(() => new Array(512).fill(0).map(() => Math.random()))),
-    matrix(new Array(512).fill(0).map(() => new Array(512).fill(0).map(() => Math.random()))),
-  ];
+  const matrices = [matrix(A), matrix(B)];
 
   // loop
   // only do 2 iterations because it's so slow
-  timeIt('matrix-js', () => matrices[0].prod(matrices[1]), 2);
+  const res = timeIt('matrix-js', () => matrices[0].prod(matrices[1]), 2);
+
+  // check
+  check((i, j) => res[i][j]);
 })();
 
 // vanilla
 (function vanillaTest() {
   // setup
-  const matrices = [
-    Array(512).fill(0).map(_ => Array(512).fill(0).map(_ => Math.random())),
-    Array(512).fill(0).map(_ => Array(512).fill(0).map(_ => Math.random())),
-  ];
+  const matrices = [A, B];
 
   // loop
-  timeIt('vanilla', () => {
-    const result = Array(512).fill(0).map(_ => Array(512).fill(0));
-    for (let y = 0; y < 512; y++) {
-      for (let x = 0; x < 512; x++) {
+  const res = timeIt('vanilla', () => {
+    const out = new Array(sz);
+    for (let i = 0; i < sz; i++) {
+      out[i] = new Array(sz);
+      for (let j = 0; j < sz; j++) {
         let sum = 0;
-        for (let i = 0; i < 512; i++) {
-          sum += matrices[0][y][i] * matrices[1][i][x];
+        for (let k = 0; k < sz; k++) {
+          sum += matrices[0][i][k] * matrices[1][k][j];
         }
-        result[y][x] = sum;
+        out[i][j] = sum;
       }
     }
+    return out;
   });
+
+  // check
+  check((i, j) => res[i][j]);
 })();
 
 // vanilla (reducer)
 (function vanillaNoLoopTest() {
   // setup
-  const matrices = [
-    Array(512).fill(0).map(_ => Array(512).fill(0).map(_ => Math.random())),
-    Array(512).fill(0).map(_ => Array(512).fill(0).map(_ => Math.random())),
-  ];
+  const matrices = [A, B];
 
   // loop
-  timeIt('vanilla (no loop)', () => {
-    const result = Array(512).fill(0).map(_ => Array(512).fill(0));
-    for (let y = 0; y < 512; y++) {
-      for (let x = 0; x < 512; x++) {
-        result[y][x] = matrices[0][y].reduce((sum, val, i) => sum + val * matrices[1][i][x], 0);
+  const res = timeIt('vanilla (no loop)', () => {
+    const out = new Array(sz);
+    for (let i = 0; i < sz; i++) {
+      out[i] = new Array(sz);
+      for (let j = 0; j < sz; j++) {
+        out[i][j] = matrices[0][i].reduce((sum, a_val, k) => sum + a_val * matrices[1][k][j], 0);
       }
     }
+    return out;
   });
+
+  // check
+  check((i, j) => res[i][j]);
 })();
 
 // vanilla (cache-line)
 (function vanillaCacheLineTest() {
   // setup
-  const matrices = [
-    Array(512).fill(0).map(_ => Array(512).fill(0).map(_ => Math.random())),
-    Array(512).fill(0).map(_ => Array(512).fill(0).map(_ => Math.random())),
-  ];
+  const matrices = [A, B];
 
   // loop
-  timeIt('vanilla (cache-line)', () => {
-    const result = Array(512).fill(0).map(_ => Array(512).fill(0));
-    for (let y = 0; y < 512; y++) {
-      for (let x = 0; x < 512; x++) {
+  const res = timeIt('vanilla (cache-line)', () => {
+    const out = new Array(sz);
+    for (let i = 0; i < sz; i++) {
+      out[i] = new Array(sz);
+      for (let j = 0; j < sz; j++) {
         let sum = 0;
-        for (let i = 0; i < 512; i += 8) {
-          sum += matrices[0][y][i] * matrices[1][i][x];
-          sum += matrices[0][y][i + 1] * matrices[1][i + 1][x];
-          sum += matrices[0][y][i + 2] * matrices[1][i + 2][x];
-          sum += matrices[0][y][i + 3] * matrices[1][i + 3][x];
-          sum += matrices[0][y][i + 4] * matrices[1][i + 4][x];
-          sum += matrices[0][y][i + 5] * matrices[1][i + 5][x];
-          sum += matrices[0][y][i + 6] * matrices[1][i + 6][x];
-          sum += matrices[0][y][i + 7] * matrices[1][i + 7][x];
+        for (let k = 0; k < sz; k += 8) {
+          sum += matrices[0][i][k] * matrices[1][k][j];
+          sum += matrices[0][i][k + 1] * matrices[1][k + 1][j];
+          sum += matrices[0][i][k + 2] * matrices[1][k + 2][j];
+          sum += matrices[0][i][k + 3] * matrices[1][k + 3][j];
+          sum += matrices[0][i][k + 4] * matrices[1][k + 4][j];
+          sum += matrices[0][i][k + 5] * matrices[1][k + 5][j];
+          sum += matrices[0][i][k + 6] * matrices[1][k + 6][j];
+          sum += matrices[0][i][k + 7] * matrices[1][k + 7][j];
         }
-        result[y][x] = sum;
+        out[i][j] = sum;
       }
     }
+    return out;
   });
+
+  // check
+  check((i, j) => res[i][j]);
 })();
 
 // vanilla Float32Array
 (function vanillaFloat32ArrayTest() {
   // setup
-  const matrices = [
-    Array(512).fill(0).map(_ => new Float32Array(512).map(_ => Math.random())),
-    Array(512).fill(0).map(_ => new Float32Array(512).map(_ => Math.random())),
-  ];
+  const matrices = [A_typed, B_typed];
 
   // loop
-  timeIt('vanilla Float32Array', () => {
-    const result = Array(512).fill(0).map(_ => new Float32Array(512));
-    for (let y = 0; y < 512; y++) {
-      for (let x = 0; x < 512; x++) {
+  const res = timeIt('vanilla Float32Array', () => {
+    const out = new Array(sz);
+    for (let i = 0; i < sz; i++) {
+      out[i] = new Array(sz);
+      for (let j = 0; j < sz; j++) {
         let sum = 0;
-        for (let i = 0; i < 512; i++) {
-          sum += matrices[0][y][i] * matrices[1][i][x];
+        for (let k = 0; k < sz; k++) {
+          sum += matrices[0][i][k] * matrices[1][k][j];
         }
-        result[y][x] = sum;
+        out[i][j] = sum;
       }
     }
+    return out;
   });
+
+  // check
+  check((i, j) => res[i][j]);
 })();
 
 // vanilla typed flat array
 (function vanillaTypedArrayTest() {
-  // setup
-  const matrices = [new Float32Array(512 * 512), new Float32Array(512 * 512)];
-  for (let i = 0; i < 512 * 512; i++) {
-    matrices[0][i] = Math.random();
-    matrices[1][i] = Math.random();
-  }
+  const matrices = [A_flat_typed, B_flat_typed];
 
   // loop
-  timeIt('vanilla typed array', () => {
-    const result = new Float32Array(512 * 512);
-    for (let y = 0; y < 512; y++) {
-      for (let x = 0; x < 512; x++) {
+  const res = timeIt('vanilla typed array', () => {
+    const out = new Float32Array(sz * sz);
+    for (let i = 0; i < sz; i++) {
+      for (let j = 0; j < sz; j++) {
         let sum = 0;
-        for (let i = 0; i < 512; i++) {
-          sum += matrices[0][y * 512 + i] * matrices[1][i * 512 + x];
+        for (let k = 0; k < sz; k++) {
+          sum += matrices[0][i * sz + k] * matrices[1][k * sz + j];
         }
-        result[y * 512 + x] = sum;
+        out[i * sz + j] = sum;
       }
     }
+    return out;
   });
+
+  // check
+  check((i, j) => res[i * sz + j]);
 })();
+
+// ndarray-gemm just straight up gave wrong answers
 
 // blasjs
 // truly aggravatingly confusing
-// not a real library, unfinished, types don't match up with implementation
-
-// ndarray-gemm just straight up gave wrong answers
+// types don't match up with implementation
+// have no idea how to use / if it's possible to use
