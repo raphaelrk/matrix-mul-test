@@ -25,41 +25,60 @@ const AB = timeIt('default', () => {
 });
 process.stdout.write('\n');
 
-function timeIt<T>(name: string, f: () => T, N_iters=50): T {
-  let start = Date.now();
-  let min = Infinity;
-  let max = 0;
+function timeIt<T>(name: string, f: () => T, N_iters=20): T {
+  let times = [];
   let res = null;
   for (let i = 0; i < N_iters; i++) {
     let time = Date.now();
     res = f();
     time = Date.now() - time;
-    if (time < min) min = time;
-    if (time > max) max = time;
+    times.push(time);
   }
-  let avg = (Date.now() - start) / N_iters;
-  const label = `${name}:`.padEnd(25);
-  const minStr = `${min}ms`.padEnd(10);
-  const maxStr = `${max}ms`.padEnd(10);
-  const avgStr = `${avg}ms`.padEnd(10);
-  // console.log(`${label} min: ${minStr} max: ${maxStr} avg: ${avgStr}`);
-  process.stdout.write(`${label} min: ${minStr} max: ${maxStr} avg: ${avgStr}`);
+  times.sort();
+  let avg = times.reduce((a, b) => a + b, 0) / times.length;
+  let var_ = times.map(t => (t - avg) ** 2).reduce((a, b) => a + b, 0) / times.length;
+  let std = Math.sqrt(var_);
+  let p0 = times[0];
+  let p5 = times[Math.floor(times.length / 20)];
+  let p25 = times[Math.floor(times.length / 4)];
+  let p50 = times[Math.floor(times.length / 2)];
+  let p75 = times[Math.floor(times.length * 3 / 4)];
+  let p95 = times[Math.floor(times.length * 19 / 20)];
+  let p100 = times[times.length - 1];
+
+  let str = [
+    `${name}:`.padEnd(25),
+    `avg: ${avg.toFixed(2)}ms`.padEnd(16),
+    `std: ${std.toFixed(2)}ms`.padEnd(16),
+    `p0: ${p0.toFixed(2)}ms`.padEnd(16),
+    `p5: ${p5.toFixed(2)}ms`.padEnd(16),
+    `p25: ${p25.toFixed(2)}ms`.padEnd(16),
+    `p50: ${p50.toFixed(2)}ms`.padEnd(16),
+    `p75: ${p75.toFixed(2)}ms`.padEnd(16),
+    `p95: ${p95.toFixed(2)}ms`.padEnd(16),
+    `p100: ${p100.toFixed(2)}ms`.padEnd(16),
+  ].join(' ');
+  process.stdout.write(str);
   return res!;
 }
 
 function check(getElem: (i: number, j: number) => number) : boolean {
   let greatestDiff = 0;
+  let greatestDiffVal = 0;
   for (let i = 0; i < sz; i++) {
     for (let j = 0; j < sz; j++) {
       let diff = Math.abs(AB[i][j] - getElem(i, j));
-      if (diff > greatestDiff) greatestDiff = diff;
+      if (diff > greatestDiff) {
+        greatestDiff = diff;
+        greatestDiffVal = AB[i][j];
+      }
     }
   }
   if (greatestDiff > 1e-3) {
-    process.stdout.write(`  FAIL: greatest diff is ${greatestDiff.toExponential(2)}`);
+    process.stdout.write(`  FAIL: greatest diff is ${greatestDiff.toExponential(2)} on value ${greatestDiffVal.toExponential(2)}`);
   }
   else if (greatestDiff > 1e-6) {
-    process.stdout.write(`  WARN: greatest diff is ${greatestDiff.toExponential(2)}`);
+    process.stdout.write(`  WARN: greatest diff is ${greatestDiff.toExponential(2)} on value ${greatestDiffVal.toExponential(2)}`);
   }
   process.stdout.write('\n');
   return true;
@@ -132,7 +151,7 @@ import * as tf from '@tensorflow/tfjs-node';
   const tensors = [tf.tensor2d(A), tf.tensor2d(B)];
 
   // loop
-  const res : tf.Tensor = timeIt('tfjs-node', () => tensors[0].matMul(tensors[1]));
+  const res : tf.Tensor = timeIt('tfjs-node-f32', () => tensors[0].matMul(tensors[1]));
 
   // check
   let data = res.dataSync();
