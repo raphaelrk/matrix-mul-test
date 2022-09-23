@@ -126,6 +126,29 @@ import matrix from 'matrix-js';
   timeIt('matrix-js', () => matrices[0].prod(matrices[1]), 2);
 })();
 
+// vanilla
+(function vanillaTest() {
+  // setup
+  const matrices = [
+    Array(512).fill(0).map(_ => Array(512).fill(0).map(_ => Math.random())),
+    Array(512).fill(0).map(_ => Array(512).fill(0).map(_ => Math.random())),
+  ];
+
+  // loop
+  timeIt('vanilla', () => {
+    const result = Array(512).fill(0).map(_ => Array(512).fill(0));
+    for (let y = 0; y < 512; y++) {
+      for (let x = 0; x < 512; x++) {
+        let sum = 0;
+        for (let i = 0; i < 512; i++) {
+          sum += matrices[0][y][i] * matrices[1][i][x];
+        }
+        result[y][x] = sum;
+      }
+    }
+  });
+})();
+
 // vanilla (reducer)
 (function vanillaNoLoopTest() {
   // setup
