@@ -31,13 +31,19 @@ import { GPU } from 'gpu.js';
     for (let y = 0; y < 512; y++){
       matrices[0].push([]);
       matrices[1].push([]);
-      for (let x = 0; x < 512; x++){
+      for (let x = 0; x < 512; x++) {
         matrices[0][y].push(Math.random());
         matrices[1][y].push(Math.random());
       }
     }
     return matrices;
   };
+  // more terse?
+  // const generateMatrices = () => [
+  //   Array(512).fill(0).map(() => Array(512).fill(0).map(() => Math.random())),
+  //   Array(512).fill(0).map(() => Array(512).fill(0).map(() => Math.random())),
+  // ];
+  const matrices = generateMatrices();
   const gpu = new GPU();
   const gpuMatrixMultiply = gpu.createKernel(function (a, b) {
     let sum = 0;
@@ -46,7 +52,6 @@ import { GPU } from 'gpu.js';
     }
     return sum;
   }).setOutput([512, 512]);
-  const matrices = generateMatrices();
 
   // loop
   timeIt('GPU.js', () => gpuMatrixMultiply(matrices[0], matrices[1]));
@@ -83,27 +88,42 @@ import * as math from 'mathjs';
   timeIt('mathjs', () => math.multiply(matrices[0], matrices[1]), 2);
 })();
 
-// vanilla
-(function vanillaTest() {
+// ndarray
+import ndarray from 'ndarray';
+import cwise from 'cwise';
+import ops from 'ndarray-ops';
+import zeros from 'zeros';
+(function ndarrayTest() {
+  // setup
+  const matrices = [zeros([512, 512]), zeros([512, 512])];
+  ops.random(matrices[0]);
+  ops.random(matrices[1]);
+  const multiply = cwise({
+    args: ['array', 'array', 'array'],
+    body: function (a, b, c) {
+      c = 0;
+      for (let i = 0; i < 512; i++) {
+        c += a * b;
+      }
+    },
+  });
+
+  // loop
+  timeIt('ndarray', () => multiply(matrices[0], matrices[1], zeros([512, 512])));
+})();
+
+// matrix-js
+import matrix from 'matrix-js';
+(function matrixJsTest() {
   // setup
   const matrices = [
-    Array(512).fill(0).map(_ => Array(512).fill(0).map(_ => Math.random())),
-    Array(512).fill(0).map(_ => Array(512).fill(0).map(_ => Math.random())),
+    matrix(new Array(512).fill(0).map(() => new Array(512).fill(0).map(() => Math.random()))),
+    matrix(new Array(512).fill(0).map(() => new Array(512).fill(0).map(() => Math.random()))),
   ];
 
   // loop
-  timeIt('vanilla', () => {
-    const result = Array(512).fill(0).map(_ => Array(512).fill(0));
-    for (let y = 0; y < 512; y++) {
-      for (let x = 0; x < 512; x++) {
-        let sum = 0;
-        for (let i = 0; i < 512; i++) {
-          sum += matrices[0][y][i] * matrices[1][i][x];
-        }
-        result[y][x] = sum;
-      }
-    }
-  });
+  // only do 2 iterations because it's so slow
+  timeIt('matrix-js', () => matrices[0].prod(matrices[1]), 2);
 })();
 
 // vanilla (reducer)
@@ -178,74 +198,32 @@ import * as math from 'mathjs';
   });
 })();
 
+// vanilla typed flat array
+(function vanillaTypedArrayTest() {
+  // setup
+  const matrices = [new Float32Array(512 * 512), new Float32Array(512 * 512)];
+  for (let i = 0; i < 512 * 512; i++) {
+    matrices[0][i] = Math.random();
+    matrices[1][i] = Math.random();
+  }
 
+  // loop
+  timeIt('vanilla typed array', () => {
+    const result = new Float32Array(512 * 512);
+    for (let y = 0; y < 512; y++) {
+      for (let x = 0; x < 512; x++) {
+        let sum = 0;
+        for (let i = 0; i < 512; i++) {
+          sum += matrices[0][y * 512 + i] * matrices[1][i * 512 + x];
+        }
+        result[y * 512 + x] = sum;
+      }
+    }
+  });
+})();
 
-// webassembly
-// import { MatrixMultiply } from 'matrix-multiply-wasm';
+// blasjs
+// truly aggravatingly confusing
+// not a real library, unfinished, types don't match up with implementation
 
-// @stdlib/
-
-// // implementing neural networks from scratch in javascript
-//
-// // import { GPU, IKernelFunctionThis, Texture } from "gpu.js";
-// // const gpu = new GPU({
-// //   mode: "gpu",
-// // });
-// //
-// // function kernelFunction(this: IKernelFunctionThis): [number, number] {
-// //   return [1, 1];
-// // }
-// //
-// // function subKernel(): [number, number] {
-// //   return [1, 1];
-// // }
-// //
-// // const kernelMap = gpu.createKernelMap<typeof kernelFunction>({
-// //   test: subKernel,
-// // }, kernelFunction)
-// // .setOutput([1])
-// // .setPipeline(true);
-// //
-// // const result = kernelMap();
-// //
-// // console.log((result.test as Texture).toArray() as [number, number][]);
-//
-// // function kernelFunction(this: IKernelFunctionThis): number {
-// //   // return 1 + this.thread.x;
-// //   return this.thread.x + this.thread.y + this.thread.z;
-// // }
-// // const kernelMap = gpu.createKernel<typeof kernelFunction>(kernelFunction).setOutput([3,3,3]);
-// // const result = kernelMap();
-// // console.log(result as number[][][]);
-//
-// // const matrixMultiply = gpu.createKernel(function (a, b) {
-// //   let sum = 0;
-// //   for (let i = 0; i < 3; i++) {
-// //     sum += a[this.thread.y][i] * b[i][this.thread.x];
-// //   }
-// //   return sum;
-// // }, {
-// //   output: [3, 3],
-// // });
-//
-// // var kernel = gpu.createKernel(function() {
-// //   return this.thread.x;
-// // }).setOutput([100]);
-// // console.log(kernel());
-// //
-// // var kernel = gpu.createKernel(function() {
-// //   const i = 1;
-// //   const j = 0.89;
-// //   return i + j;
-// // }).setOutput([100]);
-// // console.log(kernel());
-// //
-// // var kernel = gpu.createKernel(function() {
-// //   return [0.08, 2];
-// // }).setOutput([100]);
-// // console.log(kernel());
-//
-// // const kernel = gpu.createKernel<[number], {}>(function(x) {
-// //   return x;
-// // }).setOutput([100]);
-// // console.log(kernel(42));
+// ndarray-gemm just straight up gave wrong answers
