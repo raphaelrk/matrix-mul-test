@@ -18,40 +18,40 @@ To run python:
 Results (JS):
 
 ```
-default:                  avg: 470.10ms    std: 3.37ms      p0: 465.00ms     p5: 466.00ms     p25: 467.00ms    p50: 470.00ms    p75: 474.00ms    p95: 476.00ms    p100: 476.00ms  
-GPU.js single:            avg: 6.30ms      std: 3.95ms      p0: 23.00ms      p5: 4.00ms       p25: 5.00ms      p50: 5.00ms      p75: 6.00ms      p95: 8.00ms      p100: 8.00ms      FAIL: greatest diff is 2.18e+0 on value 1.37e+6
-GPU.js unsigned:          avg: 5.15ms      std: 3.93ms      p0: 22.00ms      p5: 3.00ms       p25: 4.00ms      p50: 4.00ms      p75: 4.00ms      p95: 6.00ms      p100: 6.00ms      FAIL: greatest diff is 2.43e+0 on value 1.37e+6
-GPU.js single:            avg: 4.90ms      std: 0.77ms      p0: 4.00ms       p5: 4.00ms       p25: 4.00ms      p50: 5.00ms      p75: 5.00ms      p95: 7.00ms      p100: 7.00ms      FAIL: greatest diff is 2.18e+0 on value 1.37e+6
-ml-matrix:                avg: 132.55ms    std: 7.16ms      p0: 129.00ms     p5: 129.00ms     p25: 129.00ms    p50: 130.00ms    p75: 131.00ms    p95: 156.00ms    p100: 156.00ms  
-tfjs-node-f32:            avg: 1.35ms      std: 1.11ms      p0: 1.00ms       p5: 1.00ms       p25: 1.00ms      p50: 1.00ms      p75: 1.00ms      p95: 6.00ms      p100: 6.00ms      FAIL: greatest diff is 1.06e+0 on value 1.27e+6
-mathjs:                   avg: 1881.00ms   std: 9.00ms      p0: 1872.00ms    p5: 1872.00ms    p25: 1872.00ms   p50: 1890.00ms   p75: 1890.00ms   p95: 1890.00ms   p100: 1890.00ms 
-ndarray-same-out:         avg: 117.20ms    std: 1.21ms      p0: 116.00ms     p5: 116.00ms     p25: 116.00ms    p50: 117.00ms    p75: 118.00ms    p95: 121.00ms    p100: 121.00ms  
-ndarray-diff-out:         avg: 117.30ms    std: 1.05ms      p0: 116.00ms     p5: 116.00ms     p25: 117.00ms    p50: 117.00ms    p75: 117.00ms    p95: 121.00ms    p100: 121.00ms  
-matrix-js:                avg: 1245.00ms   std: 5.00ms      p0: 1240.00ms    p5: 1240.00ms    p25: 1240.00ms   p50: 1250.00ms   p75: 1250.00ms   p95: 1250.00ms   p100: 1250.00ms 
-vanilla:                  avg: 441.25ms    std: 6.00ms      p0: 436.00ms     p5: 436.00ms     p25: 437.00ms    p50: 441.00ms    p75: 442.00ms    p95: 459.00ms    p100: 459.00ms  
-vanilla (no loop):        avg: 572.15ms    std: 13.73ms     p0: 541.00ms     p5: 550.00ms     p25: 566.00ms    p50: 571.00ms    p75: 583.00ms    p95: 599.00ms    p100: 599.00ms  
-vanilla (cache-line):     avg: 541.05ms    std: 10.63ms     p0: 533.00ms     p5: 534.00ms     p25: 535.00ms    p50: 538.00ms    p75: 542.00ms    p95: 573.00ms    p100: 573.00ms  
-vanilla Float32Array:     avg: 256.20ms    std: 3.59ms      p0: 253.00ms     p5: 253.00ms     p25: 254.00ms    p50: 255.00ms    p75: 256.00ms    p95: 268.00ms    p100: 268.00ms    FAIL: greatest diff is 1.28e-2 on value 1.34e+6
-vanilla typed array:      avg: 146.60ms    std: 22.48ms     p0: 138.00ms     p5: 138.00ms     p25: 139.00ms    p50: 139.00ms    p75: 140.00ms    p95: 216.00ms    p100: 216.00ms  
+GPU.js single:            avg: 6.00ms      std: 4.66ms      p0: 26.00ms      p5: 4.00ms       p25: 4.00ms      p50: 5.00ms      p75: 5.00ms      p95: 7.00ms      p100: 7.00ms      FAIL: greatest diff is 2.05e+0 on value 1.29e+6
+GPU.js unsigned:          avg: 4.50ms      std: 2.25ms      p0: 14.00ms      p5: 3.00ms       p25: 4.00ms      p50: 4.00ms      p75: 4.00ms      p95: 6.00ms      p100: 6.00ms      FAIL: greatest diff is 2.20e+0 on value 1.32e+6
+GPU.js single:            avg: 4.20ms      std: 0.51ms      p0: 3.00ms       p5: 4.00ms       p25: 4.00ms      p50: 4.00ms      p75: 5.00ms      p95: 5.00ms      p100: 5.00ms      FAIL: greatest diff is 2.05e+0 on value 1.29e+6
+ml-matrix:                avg: 135.55ms    std: 8.13ms      p0: 131.00ms     p5: 131.00ms     p25: 132.00ms    p50: 132.00ms    p75: 134.00ms    p95: 157.00ms    p100: 157.00ms  
+tfjs wasm:                avg: 6.25ms      std: 1.37ms      p0: 12.00ms      p5: 5.00ms       p25: 6.00ms      p50: 6.00ms      p75: 6.00ms      p95: 7.00ms      p100: 7.00ms      FAIL: greatest diff is 2.17e+0 on value 1.29e+6
+tfjs tensorflow:          avg: 1.55ms      std: 1.96ms      p0: 1.00ms       p5: 1.00ms       p25: 1.00ms      p50: 1.00ms      p75: 1.00ms      p95: 2.00ms      p100: 2.00ms      FAIL: greatest diff is 1.06e+0 on value 1.28e+6
+mathjs:                   avg: 1833.50ms   std: 42.50ms     p0: 1791.00ms    p5: 1791.00ms    p25: 1791.00ms   p50: 1876.00ms   p75: 1876.00ms   p95: 1876.00ms   p100: 1876.00ms 
+ndarray-same-out:         avg: 118.45ms    std: 2.18ms      p0: 117.00ms     p5: 117.00ms     p25: 117.00ms    p50: 118.00ms    p75: 119.00ms    p95: 125.00ms    p100: 125.00ms  
+ndarray-diff-out:         avg: 118.00ms    std: 2.00ms      p0: 116.00ms     p5: 116.00ms     p25: 117.00ms    p50: 118.00ms    p75: 118.00ms    p95: 125.00ms    p100: 125.00ms  
+matrix-js:                avg: 1264.00ms   std: 13.00ms     p0: 1251.00ms    p5: 1251.00ms    p25: 1251.00ms   p50: 1277.00ms   p75: 1277.00ms   p95: 1277.00ms   p100: 1277.00ms 
+vanilla:                  avg: 453.15ms    std: 8.71ms      p0: 440.00ms     p5: 442.00ms     p25: 449.00ms    p50: 451.00ms    p75: 458.00ms    p95: 473.00ms    p100: 473.00ms  
+vanilla (no loop):        avg: 563.60ms    std: 31.42ms     p0: 542.00ms     p5: 542.00ms     p25: 545.00ms    p50: 553.00ms    p75: 576.00ms    p95: 678.00ms    p100: 678.00ms  
+vanilla (cache-line):     avg: 454.70ms    std: 7.99ms      p0: 445.00ms     p5: 445.00ms     p25: 450.00ms    p50: 454.00ms    p75: 459.00ms    p95: 478.00ms    p100: 478.00ms  
+vanilla Float32Array:     avg: 243.30ms    std: 3.76ms      p0: 241.00ms     p5: 241.00ms     p25: 241.00ms    p50: 242.00ms    p75: 243.00ms    p95: 256.00ms    p100: 256.00ms    FAIL: greatest diff is 1.29e-2 on value 1.34e+6
+vanilla typed array:      avg: 145.40ms    std: 23.04ms     p0: 137.00ms     p5: 137.00ms     p25: 137.00ms    p50: 138.00ms    p75: 138.00ms    p95: 215.00ms    p100: 215.00ms  
 ```
 
 Results (JS, sorted)
 ```
-tfjs-node-f32:            avg: 1.35ms      std: 1.11ms      p0: 1.00ms       p5: 1.00ms       p25: 1.00ms      p50: 1.00ms      p75: 1.00ms      p95: 6.00ms      p100: 6.00ms      FAIL: greatest diff is 1.06e+0 on value 1.27e+6
-GPU.js single:            avg: 4.90ms      std: 0.77ms      p0: 4.00ms       p5: 4.00ms       p25: 4.00ms      p50: 5.00ms      p75: 5.00ms      p95: 7.00ms      p100: 7.00ms      FAIL: greatest diff is 2.18e+0 on value 1.37e+6
-GPU.js unsigned:          avg: 5.15ms      std: 3.93ms      p0: 22.00ms      p5: 3.00ms       p25: 4.00ms      p50: 4.00ms      p75: 4.00ms      p95: 6.00ms      p100: 6.00ms      FAIL: greatest diff is 2.43e+0 on value 1.37e+6
-GPU.js single:            avg: 6.30ms      std: 3.95ms      p0: 23.00ms      p5: 4.00ms       p25: 5.00ms      p50: 5.00ms      p75: 6.00ms      p95: 8.00ms      p100: 8.00ms      FAIL: greatest diff is 2.18e+0 on value 1.37e+6
-ndarray-same-out:         avg: 117.20ms    std: 1.21ms      p0: 116.00ms     p5: 116.00ms     p25: 116.00ms    p50: 117.00ms    p75: 118.00ms    p95: 121.00ms    p100: 121.00ms  
-ndarray-diff-out:         avg: 117.30ms    std: 1.05ms      p0: 116.00ms     p5: 116.00ms     p25: 117.00ms    p50: 117.00ms    p75: 117.00ms    p95: 121.00ms    p100: 121.00ms  
-ml-matrix:                avg: 132.55ms    std: 7.16ms      p0: 129.00ms     p5: 129.00ms     p25: 129.00ms    p50: 130.00ms    p75: 131.00ms    p95: 156.00ms    p100: 156.00ms  
-vanilla typed array:      avg: 146.60ms    std: 22.48ms     p0: 138.00ms     p5: 138.00ms     p25: 139.00ms    p50: 139.00ms    p75: 140.00ms    p95: 216.00ms    p100: 216.00ms  
-vanilla Float32Array:     avg: 256.20ms    std: 3.59ms      p0: 253.00ms     p5: 253.00ms     p25: 254.00ms    p50: 255.00ms    p75: 256.00ms    p95: 268.00ms    p100: 268.00ms    FAIL: greatest diff is 1.28e-2 on value 1.34e+6
-vanilla:                  avg: 441.25ms    std: 6.00ms      p0: 436.00ms     p5: 436.00ms     p25: 437.00ms    p50: 441.00ms    p75: 442.00ms    p95: 459.00ms    p100: 459.00ms  
-default:                  avg: 470.10ms    std: 3.37ms      p0: 465.00ms     p5: 466.00ms     p25: 467.00ms    p50: 470.00ms    p75: 474.00ms    p95: 476.00ms    p100: 476.00ms  
-vanilla (cache-line):     avg: 541.05ms    std: 10.63ms     p0: 533.00ms     p5: 534.00ms     p25: 535.00ms    p50: 538.00ms    p75: 542.00ms    p95: 573.00ms    p100: 573.00ms  
-vanilla (no loop):        avg: 572.15ms    std: 13.73ms     p0: 541.00ms     p5: 550.00ms     p25: 566.00ms    p50: 571.00ms    p75: 583.00ms    p95: 599.00ms    p100: 599.00ms  
-matrix-js:                avg: 1245.00ms   std: 5.00ms      p0: 1240.00ms    p5: 1240.00ms    p25: 1240.00ms   p50: 1250.00ms   p75: 1250.00ms   p95: 1250.00ms   p100: 1250.00ms 
-mathjs:                   avg: 1881.00ms   std: 9.00ms      p0: 1872.00ms    p5: 1872.00ms    p25: 1872.00ms   p50: 1890.00ms   p75: 1890.00ms   p95: 1890.00ms   p100: 1890.00ms 
+tfjs tensorflow:          avg: 1.55ms      std: 1.96ms      p0: 1.00ms       p5: 1.00ms       p25: 1.00ms      p50: 1.00ms      p75: 1.00ms      p95: 2.00ms      p100: 2.00ms      FAIL: greatest diff is 1.06e+0 on value 1.28e+6
+GPU.js single:            avg: 4.20ms      std: 0.51ms      p0: 3.00ms       p5: 4.00ms       p25: 4.00ms      p50: 4.00ms      p75: 5.00ms      p95: 5.00ms      p100: 5.00ms      FAIL: greatest diff is 2.05e+0 on value 1.29e+6
+GPU.js unsigned:          avg: 4.50ms      std: 2.25ms      p0: 14.00ms      p5: 3.00ms       p25: 4.00ms      p50: 4.00ms      p75: 4.00ms      p95: 6.00ms      p100: 6.00ms      FAIL: greatest diff is 2.20e+0 on value 1.32e+6
+GPU.js single:            avg: 6.00ms      std: 4.66ms      p0: 26.00ms      p5: 4.00ms       p25: 4.00ms      p50: 5.00ms      p75: 5.00ms      p95: 7.00ms      p100: 7.00ms      FAIL: greatest diff is 2.05e+0 on value 1.29e+6
+tfjs wasm:                avg: 6.25ms      std: 1.37ms      p0: 12.00ms      p5: 5.00ms       p25: 6.00ms      p50: 6.00ms      p75: 6.00ms      p95: 7.00ms      p100: 7.00ms      FAIL: greatest diff is 2.17e+0 on value 1.29e+6
+ndarray-diff-out:         avg: 118.00ms    std: 2.00ms      p0: 116.00ms     p5: 116.00ms     p25: 117.00ms    p50: 118.00ms    p75: 118.00ms    p95: 125.00ms    p100: 125.00ms  
+ndarray-same-out:         avg: 118.45ms    std: 2.18ms      p0: 117.00ms     p5: 117.00ms     p25: 117.00ms    p50: 118.00ms    p75: 119.00ms    p95: 125.00ms    p100: 125.00ms  
+ml-matrix:                avg: 135.55ms    std: 8.13ms      p0: 131.00ms     p5: 131.00ms     p25: 132.00ms    p50: 132.00ms    p75: 134.00ms    p95: 157.00ms    p100: 157.00ms  
+vanilla typed array:      avg: 145.40ms    std: 23.04ms     p0: 137.00ms     p5: 137.00ms     p25: 137.00ms    p50: 138.00ms    p75: 138.00ms    p95: 215.00ms    p100: 215.00ms  
+vanilla Float32Array:     avg: 243.30ms    std: 3.76ms      p0: 241.00ms     p5: 241.00ms     p25: 241.00ms    p50: 242.00ms    p75: 243.00ms    p95: 256.00ms    p100: 256.00ms    FAIL: greatest diff is 1.29e-2 on value 1.34e+6
+vanilla:                  avg: 453.15ms    std: 8.71ms      p0: 440.00ms     p5: 442.00ms     p25: 449.00ms    p50: 451.00ms    p75: 458.00ms    p95: 473.00ms    p100: 473.00ms  
+vanilla (cache-line):     avg: 454.70ms    std: 7.99ms      p0: 445.00ms     p5: 445.00ms     p25: 450.00ms    p50: 454.00ms    p75: 459.00ms    p95: 478.00ms    p100: 478.00ms  
+vanilla (no loop):        avg: 563.60ms    std: 31.42ms     p0: 542.00ms     p5: 542.00ms     p25: 545.00ms    p50: 553.00ms    p75: 576.00ms    p95: 678.00ms    p100: 678.00ms  
+matrix-js:                avg: 1264.00ms   std: 13.00ms     p0: 1251.00ms    p5: 1251.00ms    p25: 1251.00ms   p50: 1277.00ms   p75: 1277.00ms   p95: 1277.00ms   p100: 1277.00ms 
+mathjs:                   avg: 1833.50ms   std: 42.50ms     p0: 1791.00ms    p5: 1791.00ms    p25: 1791.00ms   p50: 1876.00ms   p75: 1876.00ms   p95: 1876.00ms   p100: 1876.00ms 
 ```
 
 Specs:

@@ -113,13 +113,21 @@ import { Matrix } from 'ml-matrix';
   runTest('ml-matrix', () => matrices[0].mmul(matrices[1]), (res, i, j) => res.get(i, j));
 }());
 
-// tfjs-node
-import * as tfNode from '@tensorflow/tfjs-node';
-(function tfjsNodeTest() {
-  const tensors = [tfNode.tensor2d(A), tfNode.tensor2d(B)];
+// import * as tf from '@tensorflow/tfjs'; // for browser
+import * as tf from '@tensorflow/tfjs-node'; // for node
+// import * as tfNodeGPU from '@tensorflow/tfjs-node-gpu'; // for node with GPU on Windows/Linux
+// import '@tensorflow/tfjs-backend-cpu'; // for browser
+// import '@tensorflow/tfjs-backend-webgl'; // for browser
+import '@tensorflow/tfjs-backend-wasm'; // for either browser or node
+// import '@tensorflow/tfjs-backend-webgpu'; // for browser
+let backends = ['wasm', 'tensorflow']; // for node
+// let backends = ['cpu', 'webgl', 'wasm', 'webgpu']; // for browser
+for (let backend of backends) {
+  await tf.setBackend(backend);
+  const tensors = [tf.tensor2d(A), tf.tensor2d(B)];
   let transformRes = (res: any) : any => res.dataSync();
-  runTest('tfjs-node', () => tensors[0].matMul(tensors[1]), (res, i, j) => res[i * sz + j], { transformRes });
-})();
+  runTest(`tfjs ${backend}`, () => tensors[0].matMul(tensors[1]), (res, i, j) => res[i * sz + j], { transformRes });
+}
 
 // mathjs
 import * as math from 'mathjs';

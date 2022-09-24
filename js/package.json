@@ -9,7 +9,12 @@
   },
   "type": "module",
   "dependencies": {
+    "@tensorflow/tfjs": "^3.20.0",
+    "@tensorflow/tfjs-backend-wasm": "^3.20.0",
+    "@tensorflow/tfjs-backend-webgl": "^3.20.0",
+    "@tensorflow/tfjs-backend-webgpu": "^0.0.1-alpha.13",
     "@tensorflow/tfjs-node": "^3.20.0",
+    "@tensorflow/tfjs-node-gpu": "^3.20.0",
     "cwise": "^1.0.10",
     "gpu.js": "^2.15.2",
     "mathjs": "^11.2.1",
