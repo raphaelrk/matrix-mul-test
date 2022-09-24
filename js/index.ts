@@ -1,4 +1,4 @@
-// js-matrix-mul-test/index.js
+// matrix-mul-test/js/index.js
 // compare performance of matrix multiplication of various libraries
 
 const sz = 512;
@@ -346,9 +346,9 @@ import matrix from 'matrix-js';
   check((i, j) => res[i * sz + j]);
 })();
 
-// ndarray-gemm just straight up gave wrong answers
+// ndarray-gemm gave incorrect result
 
 // blasjs
-// truly aggravatingly confusing
+// very confusing
 // types don't match up with implementation
 // have no idea how to use / if it's possible to use

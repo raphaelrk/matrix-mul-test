@@ -1,12 +1,21 @@
-# js-matrix-mul-test
+# matrix-mul-test
 
-To run:
+To run javascript:
 
+- `cd js`
 - `npm install`
 - `npm run start`
 
+To run python:
 
-Results:
+- `cd py`
+- `python -m venv venv`
+- `source venv/bin/activate` (or `source venv/bin/activate.fish` if using fish)
+- `pip install -r requirements.txt`
+- `python3 main.py`
+
+
+Results (JS):
 
 ```
 default:                  avg: 470.10ms    std: 3.37ms      p0: 465.00ms     p5: 466.00ms     p25: 467.00ms    p50: 470.00ms    p75: 474.00ms    p95: 476.00ms    p100: 476.00ms  
@@ -26,7 +35,7 @@ vanilla Float32Array:     avg: 256.20ms    std: 3.59ms      p0: 253.00ms     p5:
 vanilla typed array:      avg: 146.60ms    std: 22.48ms     p0: 138.00ms     p5: 138.00ms     p25: 139.00ms    p50: 139.00ms    p75: 140.00ms    p95: 216.00ms    p100: 216.00ms  
 ```
 
-Results (sorted)
+Results (JS, sorted)
 ```
 tfjs-node-f32:            avg: 1.35ms      std: 1.11ms      p0: 1.00ms       p5: 1.00ms       p25: 1.00ms      p50: 1.00ms      p75: 1.00ms      p95: 6.00ms      p100: 6.00ms      FAIL: greatest diff is 1.06e+0 on value 1.27e+6
 GPU.js single:            avg: 4.90ms      std: 0.77ms      p0: 4.00ms       p5: 4.00ms       p25: 4.00ms      p50: 5.00ms      p75: 5.00ms      p95: 7.00ms      p100: 7.00ms      FAIL: greatest diff is 2.18e+0 on value 1.37e+6
