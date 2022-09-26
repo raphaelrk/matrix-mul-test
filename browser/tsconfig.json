@@ -1,7 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
-    // Node 16 -- https://stackoverflow.com/questions/67371787/what-typescript-configuration-produces-output-closest-to-node-js-16-capabilities/67371788#67371788
     "module": "ES2022",
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
@@ -9,7 +8,7 @@
     "lib": ["ES2021"],
 
     "allowJs": true,
-    "esModuleInterop": true,
+//    "esModuleInterop": true,
     "noEmit": false,
     "resolveJsonModule": true,
     "skipLibCheck": true,
@@ -20,6 +19,7 @@
 
     "checkJs": true,
   },
-  "include": ["./*.ts"],
-  "exclude": ["node_modules", "data"]
+//  "include": ["./*.ts"],
+  "include": ["./serve.ts"],
+  "exclude": ["node_modules"]
 }

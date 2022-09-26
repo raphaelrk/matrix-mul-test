@@ -3,3 +3,5 @@ dist
 .DS_Store
 .idea
 py/venv
+cert.pem
+key.pem
