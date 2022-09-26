@@ -1,5 +1,7 @@
 # matrix-mul-test
 
+### Instructions
+
 To run node tests:
 
 - `cd node`
@@ -22,6 +24,13 @@ To run python:
 - `pip install -r requirements.txt`
 - `python3 main.py`
 
+To run c:
+
+- `cd c`
+- `clang++ blas_test.cc -framework Accelerate -std=c++11 -O3 -o blas_test`
+- `./blas_test 512 512 512 100 100`
+
+### Results
 
 Results (Node):
 
@@ -83,12 +92,6 @@ browser.ts:86 vanilla Float32Array:   totalAvg: 291.79ms     avg: 291.80ms    st
 browser.ts:86 vanilla typed array:    totalAvg: 154.96ms     avg: 154.95ms    std: 88.86ms     p0: 125.00ms     p5: 125.00ms     p25: 125.00ms    p50: 125.00ms    p75: 126.00ms    p95: 424.00ms    p100: 424.00ms  
 ```
 
-Results (C)
-```
-./blas_test 512 512 512 300 300
-about 2 tflops/s
-```
-
 Results (Python)
 ```
 nil:                mean: 0.0ms     std: 0.0ms      p0: 0.0ms       p5: 0.0ms       p25: 0.0ms      p50: 0.0ms      p75: 0.0ms      p95: 0.0ms      p100: 0.0ms
@@ -99,7 +102,13 @@ numba one loop:     mean: 204.16ms  std: 3.93ms     p0: 196.99ms    p5: 197.24ms
 numba no loop:      mean: 4.62ms    std: 3.98ms     p0: 2.36ms      p5: 2.37ms      p25: 2.47ms     p50: 2.93ms     p75: 3.74ms     p95: 11.32ms    p100: 17.98ms
 ```
 
-Specs:
+Results (C)
+```
+./blas_test 512 512 512 300 300
+about 2 tflops/s
+```
+
+### Specs:
 
 ```
 Model: 2021 MacBook Pro 16-inch, Apple M1 Max, 32 GB RAM
