@@ -122,5 +122,7 @@ about 2 tflops/s
 ```
 Model: 2021 MacBook Pro 16-inch, Apple M1 Max, 32 GB RAM
 OS: macOS Monterey 12.5
-Node version: 16.17.0
+Node: 16.17.0
+Python: 3.10.6
+Chrome: 107.0.5304.10 (Official Build) dev (arm64)
 ```
