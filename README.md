@@ -7,7 +7,7 @@ Some things to note:
 - There's a sharp drop from libraries taking ~100ms to ~5ms in the benchmarks, presumably the difference between single-core and multicore/gpu usage.
 - None of these use the neural engine which can apparently do ~5 teraflops
 - I should rewrite the C code to output "ms per multiply" like everything else so its easier to compare against
-- I haven't tried to improve the python much, I really didn't expect these js libraries to outperform numpy and numba + numpy
+- I haven't tried to improve the python much, I really didn't expect these js libraries to outperform numpy and numba + numpy. I should try comparing to more python libraries, particularly ones that use the GPU.
 
 ### Instructions
 
