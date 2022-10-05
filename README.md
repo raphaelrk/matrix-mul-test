@@ -126,19 +126,19 @@ numba one loop:     mean: 204.16ms  std: 3.93ms     p0: 196.99ms    p5: 197.24ms
 numba no loop:      mean: 4.62ms    std: 3.98ms     p0: 2.36ms      p5: 2.37ms      p25: 2.47ms     p50: 2.93ms     p75: 3.74ms     p95: 11.32ms    p100: 17.98ms
 ```
 
-Results (Python, Conda)
+Results (Python, Conda, N=100)
 ```
 nil:                mean: 0.0ms     std: 0.0ms      p0: 0.0ms       p5: 0.0ms       p25: 0.0ms      p50: 0.0ms      p75: 0.0ms      p95: 0.0ms      p100: 0.0ms     
-numpy.matmul:       mean: 3.77ms    std: 2.58ms     p0: 2.26ms      p5: 2.26ms      p25: 2.46ms     p50: 2.91ms     p75: 3.74ms     p95: 10.46ms    p100: 12.17ms   
-numba three loop:   mean: 129.21ms  std: 2.13ms     p0: 126.05ms    p5: 126.22ms    p25: 127.32ms   p50: 129.44ms   p75: 129.96ms   p95: 133.77ms   p100: 134.13ms  
-numba two loop:     mean: 244.9ms   std: 2.15ms     p0: 242.68ms    p5: 242.91ms    p25: 243.19ms   p50: 243.53ms   p75: 246.81ms   p95: 247.76ms   p100: 250.49ms  
-numba one loop:     mean: 203.98ms  std: 3.45ms     p0: 198.24ms    p5: 198.76ms    p25: 202.11ms   p50: 203.4ms    p75: 206.93ms   p95: 209.34ms   p100: 209.98ms  
-numba no loop:      mean: 2.77ms    std: 0.81ms     p0: 1.55ms      p5: 1.65ms      p25: 2.31ms     p50: 2.7ms      p75: 2.83ms     p95: 4.22ms     p100: 5.11ms    
-pytorch.matmul:     mean: 0.96ms    std: 1.43ms     p0: 0.53ms      p5: 0.53ms      p25: 0.55ms     p50: 0.57ms     p75: 0.65ms     p95: 1.29ms     p100: 7.17ms    
-pytorch @:          mean: 0.58ms    std: 0.07ms     p0: 0.47ms      p5: 0.48ms      p25: 0.54ms     p50: 0.56ms     p75: 0.61ms     p95: 0.68ms     p100: 0.8ms     
-tf.matmul:          mean: 1.81ms    std: 0.76ms     p0: 1.43ms      p5: 1.47ms      p25: 1.52ms     p50: 1.64ms     p75: 1.76ms     p95: 2.05ms     p100: 5.08ms    
-tf @:               mean: 1.61ms    std: 0.11ms     p0: 1.4ms       p5: 1.48ms      p25: 1.52ms     p50: 1.6ms      p75: 1.72ms     p95: 1.78ms     p100: 1.84ms    
-tf.linalg.matmul:   mean: 1.55ms    std: 0.1ms      p0: 1.42ms      p5: 1.43ms      p25: 1.48ms     p50: 1.52ms     p75: 1.62ms     p95: 1.75ms     p100: 1.75ms    
+numpy.matmul:       mean: 2.84ms    std: 1.07ms     p0: 1.61ms      p5: 1.89ms      p25: 2.16ms     p50: 2.54ms     p75: 3.24ms     p95: 4.27ms     p100: 10.11ms   
+numba three loop:   mean: 127.55ms  std: 1.71ms     p0: 125.91ms    p5: 125.98ms    p25: 126.17ms   p50: 126.74ms   p75: 128.59ms   p95: 130.25ms   p100: 134.3ms   
+numba two loop:     mean: 242.93ms  std: 6.06ms     p0: 234.61ms    p5: 237.0ms     p25: 239.35ms   p50: 241.9ms    p75: 245.04ms   p95: 253.23ms   p100: 272.25ms  
+numba one loop:     mean: 200.39ms  std: 4.01ms     p0: 193.91ms    p5: 196.31ms    p25: 196.9ms    p50: 200.43ms   p75: 201.98ms   p95: 207.62ms   p100: 216.73ms  
+numba no loop:      mean: 2.74ms    std: 0.85ms     p0: 1.66ms      p5: 1.86ms      p25: 2.17ms     p50: 2.47ms     p75: 3.08ms     p95: 4.26ms     p100: 6.21ms    
+pytorch.matmul:     mean: 0.59ms    std: 0.06ms     p0: 0.53ms      p5: 0.54ms      p25: 0.55ms     p50: 0.57ms     p75: 0.6ms      p95: 0.66ms     p100: 0.93ms    
+pytorch @:          mean: 0.58ms    std: 0.07ms     p0: 0.53ms      p5: 0.54ms      p25: 0.55ms     p50: 0.56ms     p75: 0.6ms      p95: 0.65ms     p100: 0.92ms    
+tf.matmul:          mean: 1.67ms    std: 0.31ms     p0: 1.36ms      p5: 1.5ms       p25: 1.54ms     p50: 1.62ms     p75: 1.72ms     p95: 1.9ms      p100: 4.46ms    
+tf @:               mean: 1.64ms    std: 0.1ms      p0: 1.4ms       p5: 1.48ms      p25: 1.58ms     p50: 1.62ms     p75: 1.69ms     p95: 1.83ms     p100: 1.91ms    
+tf.linalg.matmul:   mean: 1.66ms    std: 0.13ms     p0: 1.42ms      p5: 1.46ms      p25: 1.59ms     p50: 1.67ms     p75: 1.74ms     p95: 1.87ms     p100: 2.04ms
 ```
 
 Results (C)
