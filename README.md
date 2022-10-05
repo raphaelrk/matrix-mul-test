@@ -25,13 +25,28 @@ To run browser tests:
 - open `https://localhost:8080/` in Chrome Canary/Dev with webgpu enabled (`chrome://flags/#enable-unsafe-webgpu`)
 - press run, check console
 
-To run python:
+To run python (pip -- numba and numpy):
 
 - `cd py`
 - `python -m venv venv`
 - `source venv/bin/activate` (or `source venv/bin/activate.fish` if using fish)
 - `pip install -r requirements.txt`
-- `python3 main.py`
+- `python3 main_pip.py`
+
+To run python (conda -- numba, numpy, pytorch, tensorflow):
+
+- `cd py`
+- `mamba create --name matrix-mul-test python=3.10`
+- `conda activate matrix-mul-test`
+- `mamba install pytorch -c pytorch-nightly`
+- `mamba install -c apple tensorflow-deps`
+- `mamba install -c conda-forge numpy`
+- `mamba install -c numba numba`
+- `mamba install scipy`
+- `pip install tensorflow-macos`
+- `pip install tensorflow-metal`
+- `mamba env export -n matrix-mul-test > ENV.yml`
+- `python main_conda.py`
 
 To run c:
 
@@ -101,7 +116,7 @@ browser.ts:86 vanilla Float32Array:   totalAvg: 291.79ms     avg: 291.80ms    st
 browser.ts:86 vanilla typed array:    totalAvg: 154.96ms     avg: 154.95ms    std: 88.86ms     p0: 125.00ms     p5: 125.00ms     p25: 125.00ms    p50: 125.00ms    p75: 126.00ms    p95: 424.00ms    p100: 424.00ms  
 ```
 
-Results (Python)
+Results (Python, Pip)
 ```
 nil:                mean: 0.0ms     std: 0.0ms      p0: 0.0ms       p5: 0.0ms       p25: 0.0ms      p50: 0.0ms      p75: 0.0ms      p95: 0.0ms      p100: 0.0ms
 numpy.matmul:       mean: 3.45ms    std: 0.69ms     p0: 2.62ms      p5: 2.63ms      p25: 2.93ms     p50: 3.3ms      p75: 3.71ms     p95: 4.59ms     p100: 5.27ms
@@ -109,6 +124,21 @@ numba three loop:   mean: 126.83ms  std: 0.69ms     p0: 125.87ms    p5: 125.96ms
 numba two loop:     mean: 242.83ms  std: 1.6ms      p0: 240.16ms    p5: 240.41ms    p25: 242.08ms   p50: 242.75ms   p75: 243.39ms   p95: 245.83ms   p100: 246.51ms
 numba one loop:     mean: 204.16ms  std: 3.93ms     p0: 196.99ms    p5: 197.24ms    p25: 202.28ms   p50: 204.54ms   p75: 206.41ms   p95: 209.61ms   p100: 211.88ms
 numba no loop:      mean: 4.62ms    std: 3.98ms     p0: 2.36ms      p5: 2.37ms      p25: 2.47ms     p50: 2.93ms     p75: 3.74ms     p95: 11.32ms    p100: 17.98ms
+```
+
+Results (Python, Conda)
+```
+nil:                mean: 0.0ms     std: 0.0ms      p0: 0.0ms       p5: 0.0ms       p25: 0.0ms      p50: 0.0ms      p75: 0.0ms      p95: 0.0ms      p100: 0.0ms     
+numpy.matmul:       mean: 3.77ms    std: 2.58ms     p0: 2.26ms      p5: 2.26ms      p25: 2.46ms     p50: 2.91ms     p75: 3.74ms     p95: 10.46ms    p100: 12.17ms   
+numba three loop:   mean: 129.21ms  std: 2.13ms     p0: 126.05ms    p5: 126.22ms    p25: 127.32ms   p50: 129.44ms   p75: 129.96ms   p95: 133.77ms   p100: 134.13ms  
+numba two loop:     mean: 244.9ms   std: 2.15ms     p0: 242.68ms    p5: 242.91ms    p25: 243.19ms   p50: 243.53ms   p75: 246.81ms   p95: 247.76ms   p100: 250.49ms  
+numba one loop:     mean: 203.98ms  std: 3.45ms     p0: 198.24ms    p5: 198.76ms    p25: 202.11ms   p50: 203.4ms    p75: 206.93ms   p95: 209.34ms   p100: 209.98ms  
+numba no loop:      mean: 2.77ms    std: 0.81ms     p0: 1.55ms      p5: 1.65ms      p25: 2.31ms     p50: 2.7ms      p75: 2.83ms     p95: 4.22ms     p100: 5.11ms    
+pytorch.matmul:     mean: 0.96ms    std: 1.43ms     p0: 0.53ms      p5: 0.53ms      p25: 0.55ms     p50: 0.57ms     p75: 0.65ms     p95: 1.29ms     p100: 7.17ms    
+pytorch @:          mean: 0.58ms    std: 0.07ms     p0: 0.47ms      p5: 0.48ms      p25: 0.54ms     p50: 0.56ms     p75: 0.61ms     p95: 0.68ms     p100: 0.8ms     
+tf.matmul:          mean: 1.81ms    std: 0.76ms     p0: 1.43ms      p5: 1.47ms      p25: 1.52ms     p50: 1.64ms     p75: 1.76ms     p95: 2.05ms     p100: 5.08ms    
+tf @:               mean: 1.61ms    std: 0.11ms     p0: 1.4ms       p5: 1.48ms      p25: 1.52ms     p50: 1.6ms      p75: 1.72ms     p95: 1.78ms     p100: 1.84ms    
+tf.linalg.matmul:   mean: 1.55ms    std: 0.1ms      p0: 1.42ms      p5: 1.43ms      p25: 1.48ms     p50: 1.52ms     p75: 1.62ms     p95: 1.75ms     p100: 1.75ms    
 ```
 
 Results (C)
