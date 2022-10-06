@@ -139,7 +139,10 @@ pytorch @:          mean: 0.58ms    std: 0.07ms     p0: 0.53ms      p5: 0.54ms  
 tf.matmul:          mean: 1.67ms    std: 0.31ms     p0: 1.36ms      p5: 1.5ms       p25: 1.54ms     p50: 1.62ms     p75: 1.72ms     p95: 1.9ms      p100: 4.46ms    
 tf @:               mean: 1.64ms    std: 0.1ms      p0: 1.4ms       p5: 1.48ms      p25: 1.58ms     p50: 1.62ms     p75: 1.69ms     p95: 1.83ms     p100: 1.91ms    
 tf.linalg.matmul:   mean: 1.66ms    std: 0.13ms     p0: 1.42ms      p5: 1.46ms      p25: 1.59ms     p50: 1.67ms     p75: 1.74ms     p95: 1.87ms     p100: 2.04ms
+pytorch.mps.matmul: mean: 0.12ms    std: 0.83ms     p0: 0.03ms      p5: 0.03ms      p25: 0.03ms     p50: 0.03ms     p75: 0.04ms     p95: 0.09ms     p100: 8.35ms    
+pytorch.mps @:      mean: 0.04ms    std: 0.02ms     p0: 0.03ms      p5: 0.03ms      p25: 0.03ms     p50: 0.03ms     p75: 0.04ms     p95: 0.08ms     p100: 0.14ms 
 ```
+(note e.g. mps.matmul and mps @ are the same, matmul just had an initial overhead / would've been faster if we swapped run order)
 
 Results (C)
 ```

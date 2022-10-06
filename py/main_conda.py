@@ -50,6 +50,19 @@ run_test(lambda: 1, "nil")
 run_test(lambda: np.matmul(A, B), "numpy.matmul")
 
 
+# crazy slow:
+# def matmul_three_loop(A: np.ndarray, B: np.ndarray):
+#     C = np.zeros((sz, sz))
+#     for i in range(sz):
+#         for j in range(sz):
+#             for k in range(sz):
+#                 C[i, j] += A[i, k] * B[k, j]
+#     return C
+#
+#
+# run_test(lambda: matmul_three_loop(A, B), "matmul_three_loop")
+
+
 @jit(nopython=True)
 def matmul_jit_three_loop(A: np.ndarray, B: np.ndarray):
     C = np.zeros((sz, sz))
@@ -111,3 +124,10 @@ run_test(lambda: tf.linalg.matmul(A_tf, B_tf), "tf.linalg.matmul")
 # 2022-10-05 17:26:41.050691: I tensorflow/core/common_runtime/pluggable_device/pluggable_device_factory.cc:272] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 0 MB memory) -> physical PluggableDevice (device: 0, name: METAL, pci bus id: <undefined>)
 # https://developer.apple.com/forums/thread/693292
 
+
+# pytorch mps
+mps_device = torch.device("mps")
+A_torch_mps = A_torch.to(torch.float32).to(mps_device)
+B_torch_mps = B_torch.to(torch.float32).to(mps_device)
+run_test(lambda: torch.matmul(A_torch_mps, B_torch_mps), "pytorch.mps.matmul")
+run_test(lambda: A_torch_mps @ B_torch_mps, "pytorch.mps @")
