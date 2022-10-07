@@ -1,19 +1,17 @@
 # matrix-mul-test
 
-Testing python vs js (node) vs js (chrome) vs C implementations of multiplying two 512x512 matrices on an M1 Max. Very WIP, careful drawing conclusions from this.
+Testing python vs js (node) vs js (chrome) vs C, etc implementations of multiplying two 512x512 matrices on an M1 Max. Very WIP, careful drawing conclusions from this.
 
 Some things to note:
-- The context of this is wanting to do deep learning in js but worrying all the libraries would be significantly slower than numpy -- but it turns out a number of them are quite faster.
-- There's a sharp drop from libraries taking ~100ms to ~5ms in the benchmarks, presumably the difference between single-core and multicore/gpu usage.
+- The context of this is wanting to do deep learning in js but worrying all the libraries would be significantly slower than numpy -- which turns out to not be the case
+- There's a sharp drop from libraries taking ~100ms to ~5ms in the benchmarks, presumably the difference between single-core and multicore/gpu usage... but I'm not sure
 - None of these use the neural engine which can apparently do ~5 teraflops
 - I should rewrite the C code to output "ms per multiply" like everything else so its easier to compare against
-- I haven't tried to improve the python much, I really didn't expect these js libraries to outperform numpy and numba + numpy. I should try comparing to more python libraries, particularly ones that use the GPU.
 
 Todo:
-- https://github.com/arrayfire/arrayfire-python
-- https://github.com/arrayfire/arrayfire-js
+- https://github.com/arrayfire/arrayfire {python, js, cpp}
 - More Bun tests
-- C units
+- fix units on C code's output
 - CoreML
 - https://github.com/flashlight/flashlight
 

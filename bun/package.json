@@ -6,6 +6,9 @@
     "bun-types": "^0.1.0"
   },
   "dependencies": {
-    "@shumai/shumai": "^0.0.6"
+    "@shumai/shumai": "^0.0.6",
+    "@tensorflow/tfjs-backend-wasm": "^3.21.0",
+    "@tensorflow/tfjs-node": "^3.21.1",
+    "gpu.js": "^2.15.2"
   }
 }
