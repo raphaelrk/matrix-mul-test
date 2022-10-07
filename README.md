@@ -133,7 +133,8 @@ browser.ts:86 vanilla typed array:    totalAvg: 154.96ms     avg: 154.95ms    st
 
 Results (Bun / Shumai)
 ```
-shumai:  total average: 0.16ms
+shumai:                   totalAvg: 0.14ms avg: 0.14ms      std: 0.56ms      p0: 0.00ms       p5: 0.00ms       p25: 0.00ms      p50: 0.00ms      p75: 0.00ms      p95: 1.00ms      p100: 6.00ms    
+vanilla typed array:      totalAvg: 128.21ms avg: 128.20ms    std: 0.75ms      p0: 127.00ms     p5: 127.00ms     p25: 128.00ms    p50: 128.00ms    p75: 129.00ms    p95: 130.00ms    p100: 130.00ms  
 ```
 
 Results (Python, Pip)

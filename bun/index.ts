@@ -93,8 +93,27 @@ function check(getElem: (i: number, j: number) => number) : [number, number] {
 }
 
 // @ts-ignore
-runTest('shumai', () => A.matmul(B), (res, i, j) => res[i*sz + j], { N_iters: 5000, transformRes: async (res) => await res.toFloat32Array() });
+await (async function shumaiTest() {
+  await runTest('shumai', () => A.matmul(B), (res, i, j) => res[i*sz + j], { N_iters: 5000, transformRes: async (res) => await res.toFloat32Array() });
+})();
 
+
+// vanilla typed flat array
+await (async function vanillaTypedArrayTest() {
+  await runTest('vanilla typed array', () => {
+    const out = new Float32Array(sz * sz);
+    for (let i = 0; i < sz; i++) {
+      for (let j = 0; j < sz; j++) {
+        let sum = 0;
+        for (let k = 0; k < sz; k++) {
+          sum += A_F32[i * sz + k] * B_F32[k * sz + j];
+        }
+        out[i * sz + j] = sum;
+      }
+    }
+    return out;
+  }, (res, i, j) => res[i * sz + j]);
+})();
 
 /** copying from node tests **/
 /** these don't seem to work yet in bun but haven't dug too deep **/
