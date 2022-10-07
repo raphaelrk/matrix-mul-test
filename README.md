@@ -9,6 +9,14 @@ Some things to note:
 - I should rewrite the C code to output "ms per multiply" like everything else so its easier to compare against
 - I haven't tried to improve the python much, I really didn't expect these js libraries to outperform numpy and numba + numpy. I should try comparing to more python libraries, particularly ones that use the GPU.
 
+Todo:
+- https://github.com/arrayfire/arrayfire-python
+- https://github.com/arrayfire/arrayfire-js
+- More Bun tests
+- C units
+- CoreML
+- https://github.com/flashlight/flashlight
+
 ### Instructions
 
 To run node tests:
@@ -24,6 +32,15 @@ To run browser tests:
 - `npm run serve`
 - open `https://localhost:8080/` in Chrome Canary/Dev with webgpu enabled (`chrome://flags/#enable-unsafe-webgpu`)
 - press run, check console
+
+To run bun/shumai tests:
+
+- `cd bun`
+- `curl https://bun.sh/install | bash`
+- `bun upgrade --canary` (https://github.com/facebookresearch/shumai/issues/49)
+- `brew install arrayfire`
+- `bun init`
+- `bun install @shumai/shumai`
 
 To run python (pip -- numba and numpy):
 
@@ -114,6 +131,11 @@ browser.ts:86 vanilla (no loop):      totalAvg: 469.40ms     avg: 469.40ms    st
 browser.ts:86 vanilla (cache-line):   totalAvg: 385.11ms     avg: 385.10ms    std: 65.44ms     p0: 360.00ms     p5: 360.00ms     p25: 361.00ms    p50: 362.00ms    p75: 369.00ms    p95: 590.00ms    p100: 590.00ms  
 browser.ts:86 vanilla Float32Array:   totalAvg: 291.79ms     avg: 291.80ms    std: 91.60ms     p0: 259.00ms     p5: 259.00ms     p25: 259.00ms    p50: 261.00ms    p75: 264.00ms    p95: 570.00ms    p100: 570.00ms       browser.ts:103   FAIL: greatest diff is 1.23e-2 on value 1.30e+6
 browser.ts:86 vanilla typed array:    totalAvg: 154.96ms     avg: 154.95ms    std: 88.86ms     p0: 125.00ms     p5: 125.00ms     p25: 125.00ms    p50: 125.00ms    p75: 126.00ms    p95: 424.00ms    p100: 424.00ms  
+```
+
+Results (Bun / Shumai)
+```
+shumai:  total average: 0.16ms
 ```
 
 Results (Python, Pip)

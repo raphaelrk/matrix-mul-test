@@ -1,0 +1,11 @@
+{
+  "name": "mmbun",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "bun-types": "^0.1.0"
+  },
+  "dependencies": {
+    "@shumai/shumai": "^0.0.6"
+  }
+}
