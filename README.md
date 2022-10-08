@@ -14,6 +14,7 @@ Todo:
 - fix units on C code's output
 - CoreML
 - https://github.com/flashlight/flashlight
+- Taichi
 
 ### Instructions
 
